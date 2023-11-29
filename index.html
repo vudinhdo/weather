@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .weather-container {
+            text-align: center;
+        }
+
+        .weather {
+            border: 2px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .temperature {
+            font-size: 2em;
+            margin: 10px 0;
+        }
+
+        .description {
+            font-style: italic;
+        }
+
+    </style>
+</head>
+<body>
+<div class="weather-container">
+    <h1>Thời tiết hôm nay</h1>
+    <div class="weather">
+        <div class="location"></div>
+        <div class="temperature"></div>
+        <div class="description"></div>
+    </div>
+</div>
+
+<script>
+    window.addEventListener('load', () => {
+        let long;
+        let lat;
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                long = position.coords.longitude;
+                lat = position.coords.latitude;
+
+                const api = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&units=metric&appid=f887d500df0893d74c9047a8f47a72ca`;
+
+                fetch(api)
+                    .then((response) => {
+                        return response.json();
+                    })
+                    .then((data) => {
+                        const {name, main, weather} = data;
+                        const {temp} = main;
+                        const {description} = weather[0];
+
+                        document.querySelector('.location').textContent = name;
+                        document.querySelector('.temperature').textContent = `${temp}°C`;
+                        document.querySelector('.description').textContent = description;
+                    });
+            });
+        }
+    });
+
+</script>
+</body>
+</html>
